@@ -1,0 +1,1 @@
+(function(t, p) {window.Marquiz ? Marquiz.add([t, p]) : document.addEventListener('marquizLoaded', function() {Marquiz.add([t, p])})})('Inline', {id: '62ecbf4b5d31bd004f4b7edc', buttonText: 'Пройти тест', bgColor: '#0f0e0f', textColor: '#fff', rounded: true, shadow: 'rgba(15, 14, 15, 0.5)', blicked: true, buttonOnMobile: true})

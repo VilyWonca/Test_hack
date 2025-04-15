@@ -1,0 +1,1 @@
+t_onReady(function() {t_onFuncLoad('t923_init',function() {t923_init('744701816');});});

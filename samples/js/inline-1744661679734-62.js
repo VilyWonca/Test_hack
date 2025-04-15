@@ -1,0 +1,1 @@
+t_onReady(function() {setTimeout(function() {t_onFuncLoad('t868_initPopup',function() {t868_initPopup('485318208');});},500);});

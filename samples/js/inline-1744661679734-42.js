@@ -1,0 +1,1 @@
+t_onReady(function() {t_onFuncLoad('t142_checkSize',function() {t142_checkSize('749775389');});});window.addEventListener('load',function() {t_onFuncLoad('t142_checkSize',function() {t142_checkSize('749775389');});});
