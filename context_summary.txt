@@ -1,73 +1,63 @@
 === Найденный блок ===
-<a class="t-btn t142__submit t-btn_md js-click-stat" data-buttonfieldset="button" data-tilda-event-name="/tilda/click/rec749775389/button1" href="https://drive.google.com/file/d/1Ro15FfzoAQA_zgMVbtk26YHvzeLIHyAY/view" rel="noopener" style="
-                    color: #222222;
-                    background-color: #f7db0a;
-                    border-radius: 10px;
-                    -moz-border-radius: 10px;
-                    -webkit-border-radius: 10px;
-                  " target="_blank">
-<span class="t142__text">Скачать каталог</span>
-</a>
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+                Фото скрытых дверей в интерьере
+              </h2>
 
 === Родительская структура ===
-<div class="t142">
-<div class="t-container_100">
-<div class="t142__wrapone">
-<div class="t142__wraptwo">
-<a class="t-btn t142__submit t-btn_md js-click-stat" data-buttonfieldset="button" data-tilda-event-name="/tilda/click/rec749775389/button1" href="https://drive.google.com/file/d/1Ro15FfzoAQA_zgMVbtk26YHvzeLIHyAY/view" rel="noopener" style="
-                    color: #222222;
-                    background-color: #f7db0a;
-                    border-radius: 10px;
-                    -moz-border-radius: 10px;
-                    -webkit-border-radius: 10px;
-                  " target="_blank">
-<span class="t142__text">Скачать каталог</span>
-</a>
+<div class="r t-rec t-rec_pt_75 t-rec_pb_0" data-animationappear="off" data-bg-color="#ffffff" data-record-type="467" id="rec478966240" style="
+          padding-top: 75px;
+          padding-bottom: 0px;
+          background-color: #ffffff;
+        ">
+<!-- T467 -->
+<div class="t467">
+<div class="t-container t-align_center">
+<div class="t-col t-col_12">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+                Фото скрытых дверей в интерьере
+              </h2>
 </div>
+</div>
+</div>
+<style>
+          #rec478966240 .t467__title {
+            color: #000000;
+            padding-bottom: 0px;
+          }
+          @media screen and (min-width: 480px) {
+            #rec478966240 .t467__title {
+              font-size: 30px;
+            }
+          }
+          #rec478966240 .t467__descr {
+            padding-top: 0px;
+            padding-bottom: 0px;
+          }
+        </style>
+</div>
+<!-- Parent Container -->
+<div class="t467">
+<div class="t-container t-align_center">
+<div class="t-col t-col_12">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+                Фото скрытых дверей в интерьере
+              </h2>
 </div>
 </div>
 </div>
 <!-- Parent Container -->
-<div class="t-container_100">
-<div class="t142__wrapone">
-<div class="t142__wraptwo">
-<a class="t-btn t142__submit t-btn_md js-click-stat" data-buttonfieldset="button" data-tilda-event-name="/tilda/click/rec749775389/button1" href="https://drive.google.com/file/d/1Ro15FfzoAQA_zgMVbtk26YHvzeLIHyAY/view" rel="noopener" style="
-                    color: #222222;
-                    background-color: #f7db0a;
-                    border-radius: 10px;
-                    -moz-border-radius: 10px;
-                    -webkit-border-radius: 10px;
-                  " target="_blank">
-<span class="t142__text">Скачать каталог</span>
-</a>
-</div>
+<div class="t-container t-align_center">
+<div class="t-col t-col_12">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+                Фото скрытых дверей в интерьере
+              </h2>
 </div>
 </div>
 <!-- Parent Container -->
-<div class="t142__wrapone">
-<div class="t142__wraptwo">
-<a class="t-btn t142__submit t-btn_md js-click-stat" data-buttonfieldset="button" data-tilda-event-name="/tilda/click/rec749775389/button1" href="https://drive.google.com/file/d/1Ro15FfzoAQA_zgMVbtk26YHvzeLIHyAY/view" rel="noopener" style="
-                    color: #222222;
-                    background-color: #f7db0a;
-                    border-radius: 10px;
-                    -moz-border-radius: 10px;
-                    -webkit-border-radius: 10px;
-                  " target="_blank">
-<span class="t142__text">Скачать каталог</span>
-</a>
-</div>
-</div>
-<!-- Parent Container -->
-<div class="t142__wraptwo">
-<a class="t-btn t142__submit t-btn_md js-click-stat" data-buttonfieldset="button" data-tilda-event-name="/tilda/click/rec749775389/button1" href="https://drive.google.com/file/d/1Ro15FfzoAQA_zgMVbtk26YHvzeLIHyAY/view" rel="noopener" style="
-                    color: #222222;
-                    background-color: #f7db0a;
-                    border-radius: 10px;
-                    -moz-border-radius: 10px;
-                    -webkit-border-radius: 10px;
-                  " target="_blank">
-<span class="t142__text">Скачать каталог</span>
-</a>
+<div class="t-col t-col_12">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+                Фото скрытых дверей в интерьере
+              </h2>
 </div>
 
 === CSS (если найдено) ===
@@ -75,3 +65,6 @@
 
 === JS (если найдено) ===
 —
+
+=== Найдено в файле ===
+templ\index.html

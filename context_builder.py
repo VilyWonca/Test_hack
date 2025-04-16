@@ -1,5 +1,4 @@
 # context_builder.py
-
 import os
 
 def build_detailed_prompt(
@@ -7,104 +6,101 @@ def build_detailed_prompt(
     snippet: str,
     parents: str,
     related_css: str,
-    related_js: str
+    related_js: str,
+    css_index_str: str = ""
 ) -> str:
     """
-    Формирует развернутый промпт для LLM на основе:
-      - user_command: команда пользователя (что изменить)
-      - snippet: исходный HTML-блок (outerHTML)
-      - parents: HTML-окружение (родительские контейнеры)
-      - related_css: CSS, который упоминает классы/id snippet'а
-      - related_js: JS, который тоже ссылается на snippet (id/class)
-    
-    Возвращает одну большую строку (prompt).
+    Формирует развернутый текстовый prompt для LLM, который включает:
+      1. Введение: описание задачи и контекста.
+      2. Исходный HTML-блок (snippet) выбранного элемента.
+      3. Родительские контейнеры (HTML-окружение элемента).
+      4. Связанный CSS – все стили, в которых упоминаются id/классы элемента.
+      5. Связанный JS – все скрипты, где содержится код, связанный с элементом.
+      6. (Опционально) CSS-Index – индекс CSS-правил с информацией об их расположении (файл, селектор, номер строки).
+      7. Команда пользователя, описывающая требуемые изменения.
+      8. Инструкции, каким должен быть формат ответа LLM.
+
+    Возвращает единый текст prompt.
     """
+    sections = []
 
-    prompt_sections = []
-
-    # 1. Короткое введение
-    prompt_sections.append("## Введение\n")
-    prompt_sections.append(
-        "У нас есть фрагмент HTML-кода, а также его родительский контекст, CSS и JS, "
-        "которые потенциально влияют на элемент. Нужно внести изменения "
-        "согласно команде пользователя."
+    # 1. Введение
+    sections.append("## Введение")
+    sections.append(
+        "Имеется HTML-блок, его родительское окружение, CSS и JS, а также индекс CSS-правил, "
+        "из которого видно, в каких файлах и на каких строках находятся ключевые правила. "
+        "Необходимо внести изменения в выбранный элемент согласно команде пользователя."
     )
 
-    # 2. Сам HTML-блок (snippet)
-    prompt_sections.append("\n\n## Исходный HTML-блок (snippet)\n")
-    if snippet.strip():
-        prompt_sections.append(snippet.strip())
-    else:
-        prompt_sections.append("— (пусто)")
+    # 2. Исходный HTML-блок (snippet)
+    sections.append("\n## Исходный HTML-блок (snippet)")
+    sections.append(snippet.strip() if snippet.strip() else "— (пусто)")
 
-    # 3. Родительские контейнеры (HTML-окружение)
-    prompt_sections.append("\n\n## Родительские контейнеры\n")
-    if parents.strip():
-        prompt_sections.append(parents.strip())
-    else:
-        prompt_sections.append("— (нет родительских контейнеров)")
+    # 3. Родительские контейнеры
+    sections.append("\n## Родительские контейнеры")
+    sections.append(parents.strip() if parents.strip() else "— (нет родительских контейнеров)")
 
     # 4. Связанный CSS
-    prompt_sections.append("\n\n## Связанный CSS\n")
-    if related_css.strip():
-        prompt_sections.append(related_css.strip())
-    else:
-        prompt_sections.append("— (нет CSS)")
+    sections.append("\n## Связанный CSS")
+    sections.append(related_css.strip() if related_css.strip() else "— (нет CSS)")
 
     # 5. Связанный JS
-    prompt_sections.append("\n\n## Связанный JS\n")
-    if related_js.strip():
-        prompt_sections.append(related_js.strip())
-    else:
-        prompt_sections.append("— (нет JS)")
+    sections.append("\n## Связанный JS")
+    sections.append(related_js.strip() if related_js.strip() else "— (нет JS)")
 
-    # 6. Команда пользователя
-    prompt_sections.append("\n\n## Команда пользователя\n")
-    prompt_sections.append(f"{user_command}")
+    # 6. CSS-Index (опционально)
+    if css_index_str.strip():
+        sections.append("\n## CSS-Index")
+        sections.append("Ниже приведён индекс CSS-правил с их идентификаторами, файлами, селекторами и приблизительными номерами строк. "
+                        "Если необходимо внести изменения в CSS, можно ссылаться на конкретное правило по его ID.")
+        sections.append(css_index_str.strip())
 
-    # 7. Инструкции для LLM
-    prompt_sections.append("\n\n## Инструкции\n")
-    prompt_sections.append(
-        "На основе всего вышеизложенного:\n"
-        "1) Обнови/измени HTML-блок так, чтобы удовлетворить требования пользователя.\n"
-        "2) Если нужно, добавь/измени CSS. Если добавляешь CSS, укажи в отдельном блоке.\n"
-        "3) Если нужно, добавь/измени JS. Тоже укажи отдельно.\n"
-        "4) Важно сохранить работоспособность и структуру.\n"
-        "5) Верни результат в следующем формате:\n"
+    # 7. Команда пользователя
+    sections.append("\n## Команда пользователя")
+    sections.append(user_command)
+
+    # 8. Инструкции для LLM
+    sections.append("\n## Инструкции")
+    sections.append(
+        "На основе приведённых данных:\n"
+        "1) Обнови/измени HTML-блок так, чтобы удовлетворить команду пользователя.\n"
+        "2) Если требуется, измени соответствующее правило CSS (ссылаясь на его ID из CSS-индекса) или добавь новое правило.\n"
+        "3) Если требуется, обнови/добавь JS, чтобы обеспечить функциональность.\n\n"
+        "Верни результат в следующем формате:\n"
         "   ### New HTML Block\n"
-        "   <тут обновлённое HTML>\n\n"
+        "   <...>\n\n"
         "   ### Additional CSS\n"
-        "   <тут css>\n\n"
+        "   <...>\n\n"
         "   ### Additional JS\n"
-        "   <тут js>\n\n"
+        "   <...>\n\n"
         "   ### Explanation\n"
-        "   <короткое пояснение, если надо>\n"
+        "   <...>\n"
+        "Меняй стили пока только для HTML"
     )
 
-    if os.path.dirname("prompt.txt"):
-        os.makedirs(os.path.dirname("prompt.txt"), exist_ok=True)
-    with open("prompt.txt", "w", encoding="utf-8") as f:
-        f.write("\n".join(prompt_sections))
-    print("Сохранен промпт предаваемые в LLM")
+    final_text = "\n".join(sections)
 
-    return "\n".join(prompt_sections)
+    # Дополнительное сохранение prompt в файл для отладки
+    prompt_file = "prompt.txt"
+    if os.path.dirname(prompt_file):
+        os.makedirs(os.path.dirname(prompt_file), exist_ok=True)
+    with open(prompt_file, "w", encoding="utf-8") as f:
+        f.write(final_text)
+
+    print("Сохранён промпт в 'prompt.txt'")
+    return final_text
 
 
 def save_full_context_to_file(context: dict, path: str = "context_summary.txt"):
     """
-    Сохраняет контекст (найденный элемент, родительские контейнеры, CSS, JS)
-    в единый текстовый файл.
-    
-    Ожидаем, что context = {
-      "found_element": str,
-      "html_parents": str,
-      "related_css": str,
-      "related_js": str,
-      ... 
-    }
+    Сохраняет собранный контекст в единый текстовый файл.
+    Ожидается, что context содержит следующие ключи:
+      - found_element: HTML выбранного элемента,
+      - html_parents: родительские контейнеры,
+      - related_css: CSS, где упоминается элемент,
+      - related_js: JS, где упоминается элемент,
+      - found_in_file: имя файла, где был найден элемент.
     """
-
-    # Убеждаемся, что директория для path существует
     if os.path.dirname(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
 
@@ -118,16 +114,15 @@ def save_full_context_to_file(context: dict, path: str = "context_summary.txt"):
         f.write(parents.strip() + "\n\n")
 
         f.write("=== CSS (если найдено) ===\n")
-        css_ = context.get("related_css", "") or "—"
-        f.write(css_.strip() + "\n\n")
+        css_text = context.get("related_css", "") or "—"
+        f.write(css_text.strip() + "\n\n")
 
         f.write("=== JS (если найдено) ===\n")
-        js_ = context.get("related_js", "") or "—"
-        f.write(js_.strip() + "\n\n")
+        js_text = context.get("related_js", "") or "—"
+        f.write(js_text.strip() + "\n\n")
 
-        # Если хотим логировать file_name:
-        f.write(f"=== Дополнительно ===\n")
         if "found_in_file" in context:
-            f.write(f"Найдено в файле: {context['found_in_file']}\n")
+            f.write("=== Найдено в файле ===\n")
+            f.write(f"{context['found_in_file']}\n")
 
     print(f"✅ Контекст сохранён в файл: {path}")

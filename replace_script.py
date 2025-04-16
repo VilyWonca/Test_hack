@@ -1,29 +1,72 @@
-def apply_llm_changes(context_data: dict, llm_answer: str, css_file: str, js_file: str):
-    """
-    context_data: {"found_element": old_block, "found_in_file": ... }
-    llm_answer: строка от LLM
-    css_file, js_file: куда дописываем
-    """
-    # 1. Парсим ответ
-    parsed = parse_llm_response(llm_answer)
-    new_html = parsed["new_html"]
-    new_css  = parsed["new_css"]
-    new_js   = parsed["new_js"]
-    explanation = parsed["explanation"]
+# applier.py
+from bs4 import BeautifulSoup
+import re
 
-    # 2. Заменяем HTML
-    old_block = context_data["found_element"]
-    html_file = context_data["found_in_file"]
-    replace_html_block_in_file(html_file, old_block, new_html)
 
-    # 3. Добавляем CSS
-    if new_css.strip() and new_css.strip() != "— (нет CSS)":
-        append_css(css_file, new_css)
+def apply_html_change(html_path, old_outer_html, new_html_block):
+    from parser_utils import parse_snippet_for_unique_attrs, find_element_in_html
 
-    # 4. Добавляем JS
-    if new_js.strip() and new_js.strip() != "— (нет JS)":
-        append_js(js_file, new_js)
+    with open(html_path, "r", encoding="utf-8") as f:
+        soup = BeautifulSoup(f, "html.parser")
 
-    # 5. Выводим пояснение
-    if explanation.strip():
-        print("LLM Explanation:", explanation)
+    attrs = parse_snippet_for_unique_attrs(old_outer_html)
+    target = find_element_in_html(str(soup), attrs)
+
+    if target is None:
+        print("[HTML] ❌ Не удалось найти элемент по атрибутам.")
+        return
+
+    # Заменяем содержимое
+    target.replace_with(BeautifulSoup(new_html_block, "html.parser"))
+
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(str(soup))
+
+    print("[HTML] ✅ Элемент найден по атрибутам и заменён.")
+
+
+
+def apply_css_change(css_path, new_css_rule):
+    if not new_css_rule.strip():
+        print("[CSS] Пустое правило — пропускаем.")
+        return
+
+    selector_match = re.match(r"^(.*?)\s*\{", new_css_rule.strip(), re.DOTALL)
+    if not selector_match:
+        print("[CSS] Не удалось извлечь селектор из правила. Добавим как есть.")
+        with open(css_path, "a", encoding="utf-8") as f:
+            f.write("\n\n" + new_css_rule)
+        return
+
+    selector = selector_match.group(1).strip()
+
+    with open(css_path, "r", encoding="utf-8") as f:
+        css_content = f.read()
+
+    # Паттерн для нахождения уже существующего правила
+    pattern = re.compile(rf"{re.escape(selector)}\s*\{{[^{{}}]*?\}}", re.DOTALL)
+
+    if pattern.search(css_content):
+        css_content = pattern.sub(new_css_rule, css_content)
+        print(f"[CSS] Обновлено правило для селектора: {selector}")
+    else:
+        css_content += "\n\n" + new_css_rule
+        print(f"[CSS] Добавлено новое правило для селектора: {selector}")
+
+    with open(css_path, "w", encoding="utf-8") as f:
+        f.write(css_content)
+
+
+def apply_js_change(js_path, new_js_code):
+    if new_js_code.strip().startswith("—") or not new_js_code.strip():
+        print("[JS] Код не требуется.")
+        return
+    with open(js_path, "a", encoding="utf-8") as f:
+        f.write("\n\n" + new_js_code)
+    print("[JS] Скрипт добавлен в:", js_path)
+
+
+def apply_all_changes(html_path, old_outer_html, llm_response, css_path, js_path):
+    apply_html_change(html_path, old_outer_html, llm_response.get("new_html", ""))
+    apply_css_change(css_path, llm_response.get("new_css", ""))
+    apply_js_change(js_path, llm_response.get("new_js", ""))

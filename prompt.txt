@@ -1,17 +1,12 @@
 ## Введение
-
-У нас есть фрагмент HTML-кода, а также его родительский контекст, CSS и JS, которые потенциально влияют на элемент. Нужно внести изменения согласно команде пользователя.
-
+Имеется HTML-блок, его родительское окружение, CSS и JS, а также индекс CSS-правил, из которого видно, в каких файлах и на каких строках находятся ключевые правила. Необходимо внести изменения в выбранный элемент согласно команде пользователя.
 
 ## Исходный HTML-блок (snippet)
-
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
                 Фото скрытых дверей в интерьере
               </h2>
 
-
 ## Родительские контейнеры
-
 <div class="r t-rec t-rec_pt_75 t-rec_pb_0" data-animationappear="off" data-bg-color="#ffffff" data-record-type="467" id="rec478966240" style="
           padding-top: 75px;
           padding-bottom: 0px;
@@ -21,7 +16,7 @@
 <div class="t467">
 <div class="t-container t-align_center">
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
@@ -47,7 +42,7 @@
 <div class="t467">
 <div class="t-container t-align_center">
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
@@ -56,50 +51,43 @@
 <!-- Parent Container -->
 <div class="t-container t-align_center">
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
 </div>
 <!-- Parent Container -->
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
 
-
 ## Связанный CSS
-
 — (нет CSS)
 
-
 ## Связанный JS
-
 — (нет JS)
 
-
 ## Команда пользователя
-
-Сделай цвет текста не черным, а красным
-
+Сделай цвет текста красным
 
 ## Инструкции
+На основе приведённых данных:
+1) Обнови/измени HTML-блок так, чтобы удовлетворить команду пользователя.
+2) Если требуется, измени соответствующее правило CSS (ссылаясь на его ID из CSS-индекса) или добавь новое правило.
+3) Если требуется, обнови/добавь JS, чтобы обеспечить функциональность.
 
-На основе всего вышеизложенного:
-1) Обнови/измени HTML-блок так, чтобы удовлетворить требования пользователя.
-2) Если нужно, добавь/измени CSS. Если добавляешь CSS, укажи в отдельном блоке.
-3) Если нужно, добавь/измени JS. Тоже укажи отдельно.
-4) Важно сохранить работоспособность и структуру.
-5) Верни результат в следующем формате:
+Верни результат в следующем формате:
    ### New HTML Block
-   <тут обновлённое HTML>
+   <...>
 
    ### Additional CSS
-   <тут css>
+   <...>
 
    ### Additional JS
-   <тут js>
+   <...>
 
    ### Explanation
-   <короткое пояснение, если надо>
+   <...>
+Меняй стили пока только для HTML
