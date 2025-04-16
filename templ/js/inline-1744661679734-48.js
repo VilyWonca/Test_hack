@@ -1,0 +1,1 @@
+t_onReady(function() {t_onFuncLoad('t905_init',function() {t905_init('478717936');});});

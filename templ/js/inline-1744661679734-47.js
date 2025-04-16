@@ -1,0 +1,1 @@
+t_onReady(function() {var styles={mainColor:'#ffffff',secondaryColor:'#d1d1d1',bgColor:'#333038',linkBgColor:'#222124',borderColor:'#000000',playlistWidth:'',};t_onFuncLoad('t937_init',function() {t937_init('602188579',styles);});});
