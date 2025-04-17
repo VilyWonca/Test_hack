@@ -106,22 +106,48 @@ def parse_snippet_for_unique_attrs(snippet: str) -> dict:
 
 
 
+from bs4 import BeautifulSoup
+import sys
+
 def find_element_in_html(html_content: str, selected_snippet: str):
     """
-    Ищет многострочный selected_snippet внутри HTML-контента.
-    Если найден — возвращает первый тег из этого блока (как BeautifulSoup).
-    Если не найден — выводит ошибку и завершает выполнение программы.
+    Ищет элемент из selected_snippet в полном html_content:
+    - Сравнивает тег
+    - Атрибуты (id, class, data-*, field и т.д.)
+    - Внутренний текст
+    
+    Если находит совпадение — возвращает этот элемент из html_content.
+    Если нет — выводит ошибку и завершает выполнение.
     """
-    # Убираем лишние пробелы по краям строк для корректного сравнения
-    cleaned_html = "\n".join([line.strip() for line in html_content.splitlines()])
+    # Подготовка
     cleaned_snippet = "\n".join([line.strip() for line in selected_snippet.splitlines()])
+    cleaned_html = "\n".join([line.strip() for line in html_content.splitlines()])
 
     if cleaned_snippet not in cleaned_html:
         print("❌ Не удалось найти сниппет в HTML.")
         sys.exit(1)
 
-    soup = BeautifulSoup(selected_snippet, "html.parser")
-    return soup.find()  # Возвращает первый тег
+    # Парсим оба HTML
+    soup = BeautifulSoup(html_content, "html.parser")
+    snippet_soup = BeautifulSoup(selected_snippet, "html.parser")
+
+    # Извлекаем из сниппета данные
+    target = snippet_soup.find()
+    tag_name = target.name
+    attrs = target.attrs
+    inner_text = target.get_text(strip=True)
+
+    # Поиск по полному DOM
+    candidates = soup.find_all(tag_name)
+    for c in candidates:
+        # Проверка на совпадение атрибутов
+        if all(c.get(k) == v for k, v in attrs.items()):
+            # Проверка текста (чтобы не спутать похожие теги)
+            if c.get_text(strip=True) == inner_text:
+                return c
+
+    print("❌ Сниппет найден как текст, но не удалось найти элемент через BeautifulSoup.")
+    sys.exit(1)
 
 
 def fallback_decode_search(html_content: str, snippet: str):
@@ -136,20 +162,15 @@ def fallback_decode_search(html_content: str, snippet: str):
     return None
 
 
-def collect_parents(elem, max_levels=4) -> str:
+def collect_parents(elem) -> str:
     """
-    Собирает родительские контейнеры для элемента, поднимаясь вверх по дереву не более max_levels.
-    Возвращает строку, содержащую родительские HTML-контейнеры, разделенные комментарием.
+    Возвращает HTML ближайшего родительского контейнера для элемента.
+    Если родителя нет или он недопустим — возвращает пустую строку.
     """
-    parents_html = []
     parent = elem.parent
-    level = 0
-    while parent and parent.name not in ["html", "[document]", None] and level < max_levels:
-        parents_html.append(parent.decode())
-        parent = parent.parent
-        level += 1
-    # Разворачиваем список, чтобы самый верхний контейнер был в начале.
-    return "\n<!-- Parent Container -->\n".join(parents_html[::-1])
+    if parent and parent.name not in ["html", "[document]", None]:
+        return parent.decode()
+    return ""
 
 
 def collect_related_css(elem, all_css: str) -> str:
@@ -232,7 +253,7 @@ def analyze_dom_and_collect_context(index_html: str, all_css: str, all_js: str, 
             "found_in_file": index_html
         }
 
-    parents_html_str = collect_parents(found_elem, max_levels=4)
+    parents_html_str = collect_parents(found_elem)
     related_css_str = collect_related_css(found_elem, all_css)
     related_js_str = collect_related_js(found_elem, all_js)
 

@@ -2,12 +2,12 @@
 Имеется HTML-блок, его родительское окружение, CSS и JS, а также индекс CSS-правил, из которого видно, в каких файлах и на каких строках находятся ключевые правила. Необходимо внести изменения в выбранный элемент согласно команде пользователя.
 
 ## Исходный HTML-блок (snippet)
-<div class="t786__title t-name t-name_md js-product-name" field="li_title__1657183539210">
-                      Petra
-                    </div>
+<span class="js-feed-post-date t-feed__post-date t-uptitle t-uptitle_xs">15.07.2024</span>
 
 ## Родительские контейнеры
-— (нет родительских контейнеров)
+<div class="t-feed__post-parts-date-row t-feed__post-parts-date-row_afterdescr">
+<span class="js-feed-post-date t-feed__post-date t-uptitle t-uptitle_xs">15.07.2024</span>
+</div>
 
 ## Связанный CSS
 — (нет CSS)
@@ -16,7 +16,7 @@
 — (нет JS)
 
 ## Команда пользователя
-Сделай цвет текста красным
+Сделай этот текста красным
 
 ## Инструкции
 На основе приведённых данных:

@@ -27,17 +27,15 @@ def main():
     root_path = "templ"  # Укажите актуальный путь
 
     # 2) HTML snippet – выбранный пользователем фрагмент (outerHTML)
-    snippet = """<div class="t786__title t-name t-name_md js-product-name" field="li_title__1657183539210">
-                      Petra
-                    </div>
-                """ 
+    snippet = """<span class="js-feed-post-date t-feed__post-date t-uptitle t-uptitle_xs">15.07.2024</span>""" 
 
     # 3) Команда пользователя (что требуется изменить)
-    user_command = "Сделай цвет текста красным"
+    user_command = "Сделай этот текста красным"
 
     # 4) Собираем структуру проекта: index.html, пути к файлам CSS и JS
     proj = parse_project_simple(root_path)
     all_css = load_all_css(proj["css_files"])
+    print("Это полная строка CSS", all_css)
     all_js  = load_all_js(proj["js_files"])
 
     # 5) Анализируем DOM выбранного HTML-файла, собираем контекст выбранного элемента,
@@ -69,17 +67,13 @@ def main():
 
     # 8) Получаем ответ от LLM
     llm_answer = call_llm(prompt_text)
-    print("=== LLM ANSWER ===")
-    print(llm_answer)
 
     # 9) Парсим результат
     parsed = parse_llm_response(llm_answer)
-    print("\nПарсим ответ LLM:")
-    print(parsed)
+    print("Ответ в парсе LLM:", parsed)
 
     # 10) Применяем изменения
-    print('Пытаемся применить изменения')
-    print('Вот старный блок:', context_data)
+    print('Вот старный блок:', context_data["found_element"])
     print('Вот новый блок:', parse_llm_response(llm_answer)['new_html'])
     apply_html_change("templ/index.html", context_data["found_element"], parse_llm_response(llm_answer)['new_html'])
     print('Замена прошла усешно!')

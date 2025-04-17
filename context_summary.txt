@@ -1,10 +1,10 @@
 === Найденный блок ===
-<div class="t786__title t-name t-name_md js-product-name" field="li_title__1657183539210">
-                      Petra
-                    </div>
+<span class="js-feed-post-date t-feed__post-date t-uptitle t-uptitle_xs">15.07.2024</span>
 
 === Родительская структура ===
-—
+<div class="t-feed__post-parts-date-row t-feed__post-parts-date-row_afterdescr">
+<span class="js-feed-post-date t-feed__post-date t-uptitle t-uptitle_xs">15.07.2024</span>
+</div>
 
 === CSS (если найдено) ===
 —
