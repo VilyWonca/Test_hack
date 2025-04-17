@@ -2,6 +2,7 @@
 import os
 import re
 from bs4 import BeautifulSoup
+import sys
 
 
 def parse_project_simple(root_path: str) -> dict:
@@ -104,40 +105,23 @@ def parse_snippet_for_unique_attrs(snippet: str) -> dict:
     return result
 
 
-def find_element_in_html(html_content: str, snippet_attrs: dict):
+
+def find_element_in_html(html_content: str, selected_snippet: str):
     """
-    Ищет элемент в html_content, удовлетворяющий атрибутам, извлеченным из snippet.
-    
-    Приоритет поиска:
-      1) По id (если есть).
-      2) По data-* атрибутам.
-      3) По точному совпадению набора классов.
-    
-    Если элемент найден, возвращает объект BeautifulSoup, иначе None.
+    Ищет многострочный selected_snippet внутри HTML-контента.
+    Если найден — возвращает первый тег из этого блока (как BeautifulSoup).
+    Если не найден — выводит ошибку и завершает выполнение программы.
     """
-    soup = BeautifulSoup(html_content, "html.parser")
-    if "id" in snippet_attrs:
-        found = soup.find(snippet_attrs["tag"], id=snippet_attrs["id"])
-        if found:
-            return found
-    if "data_attrs" in snippet_attrs:
-        def match_data_attrs(tag):
-            if tag.name != snippet_attrs["tag"]:
-                return False
-            for dk, dv in snippet_attrs["data_attrs"].items():
-                if tag.get(dk) != dv:
-                    return False
-            return True
-        found = soup.find(match_data_attrs)
-        if found:
-            return found
-    if "classes" in snippet_attrs:
-        class_list = snippet_attrs["classes"]
-        candidates = soup.find_all(snippet_attrs["tag"])
-        for c in candidates:
-            if set(c.get("class", [])) == set(class_list):
-                return c
-    return None
+    # Убираем лишние пробелы по краям строк для корректного сравнения
+    cleaned_html = "\n".join([line.strip() for line in html_content.splitlines()])
+    cleaned_snippet = "\n".join([line.strip() for line in selected_snippet.splitlines()])
+
+    if cleaned_snippet not in cleaned_html:
+        print("❌ Не удалось найти сниппет в HTML.")
+        sys.exit(1)
+
+    soup = BeautifulSoup(selected_snippet, "html.parser")
+    return soup.find()  # Возвращает первый тег
 
 
 def fallback_decode_search(html_content: str, snippet: str):
@@ -236,7 +220,7 @@ def analyze_dom_and_collect_context(index_html: str, all_css: str, all_js: str, 
     with open(index_html, "r", encoding="utf-8") as f:
         content = f.read()
 
-    found_elem = find_element_in_html(content, snippet_attrs)
+    found_elem = find_element_in_html(content, selected_snippet)
     if not found_elem:
         found_elem = fallback_decode_search(content, selected_snippet)
     if not found_elem:

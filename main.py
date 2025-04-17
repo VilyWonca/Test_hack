@@ -27,12 +27,13 @@ def main():
     root_path = "templ"  # Укажите актуальный путь
 
     # 2) HTML snippet – выбранный пользователем фрагмент (outerHTML)
-    snippet = """<<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title">
-                Фото скрытых дверей в интерьере
-              </h2>"""
+    snippet = """<div class="t786__title t-name t-name_md js-product-name" field="li_title__1657183539210">
+                      Petra
+                    </div>
+                """ 
 
     # 3) Команда пользователя (что требуется изменить)
-    user_command = "Сделай цвет текста зеленым"
+    user_command = "Сделай цвет текста красным"
 
     # 4) Собираем структуру проекта: index.html, пути к файлам CSS и JS
     proj = parse_project_simple(root_path)
@@ -42,10 +43,10 @@ def main():
     # 5) Анализируем DOM выбранного HTML-файла, собираем контекст выбранного элемента,
     #    включая родительские контейнеры, а также связанные CSS и JS.
     context_data = analyze_dom_and_collect_context(
-        proj["index_html"],
-        all_css,
-        all_js,
-        snippet
+        index_html="templ/index.html",          
+        all_css=all_css,                     
+        all_js=all_js,                       
+        selected_snippet=snippet
     )
     save_full_context_to_file(context_data, "context_summary.txt")
     if not context_data["found_element"]:
@@ -78,6 +79,8 @@ def main():
 
     # 10) Применяем изменения
     print('Пытаемся применить изменения')
+    print('Вот старный блок:', context_data)
+    print('Вот новый блок:', parse_llm_response(llm_answer)['new_html'])
     apply_html_change("templ/index.html", context_data["found_element"], parse_llm_response(llm_answer)['new_html'])
     print('Замена прошла усешно!')
     

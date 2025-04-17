@@ -1,64 +1,10 @@
 === Найденный блок ===
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
-                Фото скрытых дверей в интерьере
-              </h2>
+<div class="t786__title t-name t-name_md js-product-name" field="li_title__1657183539210">
+                      Petra
+                    </div>
 
 === Родительская структура ===
-<div class="r t-rec t-rec_pt_75 t-rec_pb_0" data-animationappear="off" data-bg-color="#ffffff" data-record-type="467" id="rec478966240" style="
-          padding-top: 75px;
-          padding-bottom: 0px;
-          background-color: #ffffff;
-        ">
-<!-- T467 -->
-<div class="t467">
-<div class="t-container t-align_center">
-<div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
-                Фото скрытых дверей в интерьере
-              </h2>
-</div>
-</div>
-</div>
-<style>
-          #rec478966240 .t467__title {
-            color: #000000;
-            padding-bottom: 0px;
-          }
-          @media screen and (min-width: 480px) {
-            #rec478966240 .t467__title {
-              font-size: 30px;
-            }
-          }
-          #rec478966240 .t467__descr {
-            padding-top: 0px;
-            padding-bottom: 0px;
-          }
-        </style>
-</div>
-<!-- Parent Container -->
-<div class="t467">
-<div class="t-container t-align_center">
-<div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
-                Фото скрытых дверей в интерьере
-              </h2>
-</div>
-</div>
-</div>
-<!-- Parent Container -->
-<div class="t-container t-align_center">
-<div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
-                Фото скрытых дверей в интерьере
-              </h2>
-</div>
-</div>
-<!-- Parent Container -->
-<div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
-                Фото скрытых дверей в интерьере
-              </h2>
-</div>
+—
 
 === CSS (если найдено) ===
 —
@@ -67,4 +13,4 @@
 —
 
 === Найдено в файле ===
-templ\index.html
+templ/index.html

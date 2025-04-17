@@ -7,9 +7,6 @@ def apply_html_change(html_path, old_outer_html, new_html_block):
     with open(html_path, "r", encoding="utf-8") as f:
         html_content = f.read()
 
-    print("=== ИЩЕМ ТОЧНОЕ СОВПАДЕНИЕ ===")
-    print("СТАРЫЙ БЛОК:", old_outer_html)
-
     if old_outer_html in html_content:
         updated = html_content.replace(old_outer_html, new_html_block)
 
@@ -19,10 +16,6 @@ def apply_html_change(html_path, old_outer_html, new_html_block):
         print("✅ ЗАМЕНА ВЫПОЛНЕНА ЧЕРЕЗ str.replace")
     else:
         print("❌ СТРОКА НЕ НАЙДЕНА В ФАЙЛЕ — ЗАМЕНА НЕ ПРОИЗОШЛА")
-
-    print("=== СОДЕРЖИМОЕ ФАЙЛА ПОСЛЕ ЗАПИСИ ===")
-    with open(html_path, "r", encoding="utf-8") as f:
-        print(f.read()[:500])
 
 
 def apply_css_change(css_path, new_css_rule):
