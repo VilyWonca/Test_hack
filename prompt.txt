@@ -2,11 +2,27 @@
 Имеется HTML-блок, его родительское окружение, CSS и JS, а также индекс CSS-правил, из которого видно, в каких файлах и на каких строках находятся ключевые правила. Необходимо внести изменения в выбранный элемент согласно команде пользователя.
 
 ## Исходный HTML-блок (snippet)
-<span class="js-feed-post-date t-feed__post-date t-uptitle t-uptitle_xs">15.07.2024</span>
+<button class="t-submit" data-buttonfieldset="button" data-field="buttontitle" style="
+                                  color: #000000;
+                                  background-color: #ffea00;
+                                  border-radius: 0px;
+                                  -moz-border-radius: 0px;
+                                  -webkit-border-radius: 0px;
+                                " type="submit">
+                                Получить прайс
+                              </button>
 
 ## Родительские контейнеры
-<div class="t-feed__post-parts-date-row t-feed__post-parts-date-row_afterdescr">
-<span class="js-feed-post-date t-feed__post-date t-uptitle t-uptitle_xs">15.07.2024</span>
+<div class="t-form__submit">
+<button class="t-submit" data-buttonfieldset="button" data-field="buttontitle" style="
+                                  color: #000000;
+                                  background-color: #ffea00;
+                                  border-radius: 0px;
+                                  -moz-border-radius: 0px;
+                                  -webkit-border-radius: 0px;
+                                " type="submit">
+                                Получить прайс
+                              </button>
 </div>
 
 ## Связанный CSS
@@ -16,7 +32,7 @@
 — (нет JS)
 
 ## Команда пользователя
-Сделай этот текста красным
+Сделай цвет кнопки ярко-зеленым
 
 ## Инструкции
 На основе приведённых данных:
@@ -36,4 +52,3 @@
 
    ### Explanation
    <...>
-Меняй стили пока только для HTML

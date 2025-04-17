@@ -2,6 +2,7 @@
 import os
 import re
 from bs4 import BeautifulSoup
+from typing import Dict, List
 import sys
 
 
@@ -53,16 +54,19 @@ def parse_project_simple(root_path: str) -> dict:
     }
 
 
-def load_all_css(css_files: list) -> str:
+def load_all_css(css_dir: str) -> str:
     """
-    Считывает содержимое каждого CSS-файла из списка css_files и объединяет их в одну большую строку.
+    Считывает все CSS-файлы из указанной директории и объединяет их содержимое в одну строку.
     """
     contents = []
-    for cfile in css_files:
-        if os.path.exists(cfile):
-            with open(cfile, "r", encoding="utf-8", errors="ignore") as f:
-                contents.append(f.read())
+    for filename in os.listdir(css_dir):
+        if filename.lower().endswith(".css"):
+            filepath = os.path.join(css_dir, filename)
+            if os.path.isfile(filepath):
+                with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
+                    contents.append(f.read())
     return "\n".join(contents)
+
 
 
 def load_all_js(js_files: list) -> str:
@@ -173,24 +177,42 @@ def collect_parents(elem) -> str:
     return ""
 
 
-def collect_related_css(elem, all_css: str) -> str:
+import re
+
+def collect_related_css(elem, index_html_path: str) -> str:
     """
-    Ищет в all_css упоминания id или классов выбранного элемента.
-    Если найдено хотя бы одно совпадение, возвращает весь CSS (упрощенно).
-    Если совпадений нет, возвращает пустую строку.
+    Извлекает CSS-правила из index.html и возвращает строку с CSS-блоками, 
+    релевантными переданному элементу.
     """
     elem_id = elem.get("id")
     elem_classes = elem.get("class", [])
-    found_any = False
+
+    if not elem_id and not elem_classes:
+        return ""
+
+    with open(index_html_path, "r", encoding="utf-8", errors="ignore") as f:
+        soup = BeautifulSoup(f, "html.parser")
+
+    # Собираем CSS из всех тегов <style>
+    style_tags = soup.find_all("style")
+    all_css = "\n".join(tag.get_text() for tag in style_tags)
+
+    pattern_parts = []
     if elem_id:
-        pattern_id = re.compile(rf'#{re.escape(elem_id)}\b')
-        if pattern_id.search(all_css):
-            found_any = True
+        pattern_parts.append(fr'#{re.escape(elem_id)}\b')
     for cls in elem_classes:
-        pattern_class = re.compile(rf'\.{re.escape(cls)}\b')
-        if pattern_class.search(all_css):
-            found_any = True
-    return all_css if found_any else ""
+        pattern_parts.append(fr'\.{re.escape(cls)}\b')
+
+    pattern_str = "|".join(pattern_parts)
+    css_rule_pattern = re.compile(r'([^{]+)\{([^}]+)\}', re.MULTILINE)
+
+    relevant_blocks = []
+    for match in css_rule_pattern.finditer(all_css):
+        selector, body = match.groups()
+        if re.search(pattern_str, selector):
+            relevant_blocks.append(f"{selector.strip()} {{{body.strip()}}}")
+
+    return "\n\n".join(relevant_blocks)
 
 
 def collect_related_js(elem, all_js: str) -> str:
@@ -254,7 +276,7 @@ def analyze_dom_and_collect_context(index_html: str, all_css: str, all_js: str, 
         }
 
     parents_html_str = collect_parents(found_elem)
-    related_css_str = collect_related_css(found_elem, all_css)
+    related_css_str = collect_related_css(found_elem, "templ/index.html")
     related_js_str = collect_related_js(found_elem, all_js)
 
     return {

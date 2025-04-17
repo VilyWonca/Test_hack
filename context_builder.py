@@ -75,7 +75,6 @@ def build_detailed_prompt(
         "   <...>\n\n"
         "   ### Explanation\n"
         "   <...>\n"
-        "Меняй стили пока только для HTML"
     )
 
     final_text = "\n".join(sections)

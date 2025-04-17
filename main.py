@@ -1,12 +1,9 @@
-# main.py
-
 from parser_utils import (
     parse_project_simple,
     load_all_css,
     load_all_js,
     analyze_dom_and_collect_context,
-    find_element_in_html,
-    parse_snippet_for_unique_attrs
+    find_element_in_html
 )
 from indexer_utils import create_css_index, render_css_index_for_llm
 from context_builder import (
@@ -15,7 +12,7 @@ from context_builder import (
 )
 from pars_llm_ansver import parse_llm_response
 from llm_client import call_llm
-from replace_script import apply_html_change
+from replace_script import apply_html_change, apply_css_change_to_html
 
 
 def is_local_file(path):
@@ -23,23 +20,27 @@ def is_local_file(path):
 
 
 def main():
-    # 1) Корень проекта (здесь указываем путь, где находится index.html и поддиректории css/ и js/)
-    root_path = "templ"  # Укажите актуальный путь
+    root_path = "templ"
 
-    # 2) HTML snippet – выбранный пользователем фрагмент (outerHTML)
-    snippet = """<span class="js-feed-post-date t-feed__post-date t-uptitle t-uptitle_xs">15.07.2024</span>""" 
+    # 🔹 Исходный HTML-блок
+    snippet = """<button class="t-submit" data-buttonfieldset="button" data-field="buttontitle" style="
+                                  color: #000000;
+                                  background-color: #ffea00;
+                                  border-radius: 0px;
+                                  -moz-border-radius: 0px;
+                                  -webkit-border-radius: 0px;
+                                " type="submit">
+                                Получить прайс
+                              </button>""" 
 
-    # 3) Команда пользователя (что требуется изменить)
-    user_command = "Сделай этот текста красным"
+    user_command = "Сделай цвет кнопки красным"
 
-    # 4) Собираем структуру проекта: index.html, пути к файлам CSS и JS
+    # 🔹 Парсим структуру проекта
     proj = parse_project_simple(root_path)
-    all_css = load_all_css(proj["css_files"])
-    print("Это полная строка CSS", all_css)
+    all_css = load_all_css("templ/css/")
     all_js  = load_all_js(proj["js_files"])
 
-    # 5) Анализируем DOM выбранного HTML-файла, собираем контекст выбранного элемента,
-    #    включая родительские контейнеры, а также связанные CSS и JS.
+    # 🔹 Собираем контекст по выбранному элементу
     context_data = analyze_dom_and_collect_context(
         index_html="templ/index.html",          
         all_css=all_css,                     
@@ -47,15 +48,16 @@ def main():
         selected_snippet=snippet
     )
     save_full_context_to_file(context_data, "context_summary.txt")
+
     if not context_data["found_element"]:
         print("❌ Элемент не найден в index.html")
         return
 
-    # 6) Индексируем CSS-файлы
+    # 🔹 Индексируем CSS
     css_index = create_css_index(proj["css_files"])
     css_index_str = render_css_index_for_llm(css_index)
 
-    # 7) Формируем prompt
+    # 🔹 Строим prompt и отправляем в LLM
     prompt_text = build_detailed_prompt(
         user_command=user_command,
         snippet=context_data["found_element"],
@@ -64,19 +66,21 @@ def main():
         related_js=context_data["related_js"],
         css_index_str=css_index_str
     )
-
-    # 8) Получаем ответ от LLM
     llm_answer = call_llm(prompt_text)
-
-    # 9) Парсим результат
     parsed = parse_llm_response(llm_answer)
-    print("Ответ в парсе LLM:", parsed)
 
-    # 10) Применяем изменения
-    print('Вот старный блок:', context_data["found_element"])
-    print('Вот новый блок:', parse_llm_response(llm_answer)['new_html'])
-    apply_html_change("templ/index.html", context_data["found_element"], parse_llm_response(llm_answer)['new_html'])
-    print('Замена прошла усешно!')
-    
+    print("Ответ от LLM:")
+    print(parsed)
+
+    # 🔹 HTML: обновляем блок в файле
+    apply_html_change("templ/index.html", context_data["found_element"], parsed["new_html"])
+    print("✅ Замена html прошла успешно!")
+
+
+    # 🔹 CSS: обновляем <style> внутри HTML
+    apply_css_change_to_html("templ/index.html", parsed["new_css"])
+    print("✅ Замена css прошла успешно!")
+
+
 if __name__ == "__main__":
     main()

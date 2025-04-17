@@ -1,9 +1,25 @@
 === Найденный блок ===
-<span class="js-feed-post-date t-feed__post-date t-uptitle t-uptitle_xs">15.07.2024</span>
+<button class="t-submit" data-buttonfieldset="button" data-field="buttontitle" style="
+                                  color: #000000;
+                                  background-color: #ffea00;
+                                  border-radius: 0px;
+                                  -moz-border-radius: 0px;
+                                  -webkit-border-radius: 0px;
+                                " type="submit">
+                                Получить прайс
+                              </button>
 
 === Родительская структура ===
-<div class="t-feed__post-parts-date-row t-feed__post-parts-date-row_afterdescr">
-<span class="js-feed-post-date t-feed__post-date t-uptitle t-uptitle_xs">15.07.2024</span>
+<div class="t-form__submit">
+<button class="t-submit" data-buttonfieldset="button" data-field="buttontitle" style="
+                                  color: #000000;
+                                  background-color: #ffea00;
+                                  border-radius: 0px;
+                                  -moz-border-radius: 0px;
+                                  -webkit-border-radius: 0px;
+                                " type="submit">
+                                Получить прайс
+                              </button>
 </div>
 
 === CSS (если найдено) ===
