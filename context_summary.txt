@@ -1,5 +1,5 @@
 === Найденный блок ===
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
                 Фото скрытых дверей в интерьере
               </h2>
 
@@ -13,7 +13,7 @@
 <div class="t467">
 <div class="t-container t-align_center">
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
@@ -39,7 +39,7 @@
 <div class="t467">
 <div class="t-container t-align_center">
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
@@ -48,14 +48,14 @@
 <!-- Parent Container -->
 <div class="t-container t-align_center">
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
 </div>
 <!-- Parent Container -->
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>

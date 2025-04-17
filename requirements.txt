@@ -1,5 +1,3 @@
 together
 bs4
 dotenv
-__pycache__/
-*.pyc

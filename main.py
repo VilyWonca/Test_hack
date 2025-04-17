@@ -32,7 +32,7 @@ def main():
               </h2>"""
 
     # 3) Команда пользователя (что требуется изменить)
-    user_command = "Сделай цвет текста красным"
+    user_command = "Сделай цвет текста зеленым"
 
     # 4) Собираем структуру проекта: index.html, пути к файлам CSS и JS
     proj = parse_project_simple(root_path)
@@ -78,8 +78,8 @@ def main():
 
     # 10) Применяем изменения
     print('Пытаемся применить изменения')
-    print(parse_llm_response(llm_answer)['new_html'])
-    apply_html_change("index.html", context_data["found_element"], parse_llm_response(llm_answer)['new_html'])
+    apply_html_change("templ/index.html", context_data["found_element"], parse_llm_response(llm_answer)['new_html'])
+    print('Замена прошла усешно!')
     
 if __name__ == "__main__":
     main()

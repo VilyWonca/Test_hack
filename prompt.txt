@@ -2,7 +2,7 @@
 Имеется HTML-блок, его родительское окружение, CSS и JS, а также индекс CSS-правил, из которого видно, в каких файлах и на каких строках находятся ключевые правила. Необходимо внести изменения в выбранный элемент согласно команде пользователя.
 
 ## Исходный HTML-блок (snippet)
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
                 Фото скрытых дверей в интерьере
               </h2>
 
@@ -16,7 +16,7 @@
 <div class="t467">
 <div class="t-container t-align_center">
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
@@ -42,7 +42,7 @@
 <div class="t467">
 <div class="t-container t-align_center">
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
@@ -51,14 +51,14 @@
 <!-- Parent Container -->
 <div class="t-container t-align_center">
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
 </div>
 <!-- Parent Container -->
 <div class="t-col t-col_12">
-<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: red;">
+<h2 class="t467__title t-title t-title_lg t-margin_auto" field="title" style="color: orange;">
                 Фото скрытых дверей в интерьере
               </h2>
 </div>
@@ -70,7 +70,7 @@
 — (нет JS)
 
 ## Команда пользователя
-Сделай цвет текста красным
+Сделай цвет текста зеленым
 
 ## Инструкции
 На основе приведённых данных:

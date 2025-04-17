@@ -1,29 +1,28 @@
-# applier.py
 from bs4 import BeautifulSoup
 import re
 
-
 def apply_html_change(html_path, old_outer_html, new_html_block):
-    from parser_utils import parse_snippet_for_unique_attrs, find_element_in_html
+    print("[HTML] Пытаемся обновить:", html_path)
 
     with open(html_path, "r", encoding="utf-8") as f:
-        soup = BeautifulSoup(f, "html.parser")
+        html_content = f.read()
 
-    attrs = parse_snippet_for_unique_attrs(old_outer_html)
-    target = find_element_in_html(str(soup), attrs)
+    print("=== ИЩЕМ ТОЧНОЕ СОВПАДЕНИЕ ===")
+    print("СТАРЫЙ БЛОК:", old_outer_html)
 
-    if target is None:
-        print("[HTML] ❌ Не удалось найти элемент по атрибутам.")
-        return
+    if old_outer_html in html_content:
+        updated = html_content.replace(old_outer_html, new_html_block)
 
-    # Заменяем содержимое
-    target.replace_with(BeautifulSoup(new_html_block, "html.parser"))
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(updated)
 
-    with open(html_path, "w", encoding="utf-8") as f:
-        f.write(str(soup))
+        print("✅ ЗАМЕНА ВЫПОЛНЕНА ЧЕРЕЗ str.replace")
+    else:
+        print("❌ СТРОКА НЕ НАЙДЕНА В ФАЙЛЕ — ЗАМЕНА НЕ ПРОИЗОШЛА")
 
-    print("[HTML] ✅ Элемент найден по атрибутам и заменён.")
-
+    print("=== СОДЕРЖИМОЕ ФАЙЛА ПОСЛЕ ЗАПИСИ ===")
+    with open(html_path, "r", encoding="utf-8") as f:
+        print(f.read()[:500])
 
 
 def apply_css_change(css_path, new_css_rule):
@@ -43,7 +42,6 @@ def apply_css_change(css_path, new_css_rule):
     with open(css_path, "r", encoding="utf-8") as f:
         css_content = f.read()
 
-    # Паттерн для нахождения уже существующего правила
     pattern = re.compile(rf"{re.escape(selector)}\s*\{{[^{{}}]*?\}}", re.DOTALL)
 
     if pattern.search(css_content):
