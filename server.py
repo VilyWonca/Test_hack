@@ -1,82 +1,80 @@
 # server.py
 import socketio
-from fastapi import FastAPI
 from uuid import uuid4
 from time import time
+from typing import Literal
 
-from models import MessagePayload, make_bot_reply, Message
+from pydantic import BaseModel
 
-# ────────── 1. Socket.IO объект ──────────
+from main import main as run_main  # импорт твоей главной функции
+
+# ────────── Pydantic-модели ──────────
+
+MessageRole = Literal["user", "bot"]
+
+class Message(BaseModel):
+    id: str
+    role: MessageRole
+    content: str
+    timestamp: int
+
+class MessagePayload(BaseModel):
+    message: Message
+    selectedList: list[str]  # это и есть snippets
+
+def make_bot_reply(text: str) -> Message:
+    return Message(
+        id=str(uuid4()),
+        role="bot",
+        content=text,
+        timestamp=int(time() * 1000)
+    )
+
+# ────────── Socket.IO сервер ──────────
+
 sio = socketio.AsyncServer(
     async_mode="asgi",
-    cors_allowed_origins="*",  # CORS для локальной разработки
-    json=MessagePayload.model_json,  # чтобы SIO сериализовал так же, как Pydantic
+    cors_allowed_origins="*"
 )
+app = socketio.ASGIApp(sio, socketio_path="socket.io")
+ml_namespace = "/ml"
 
-# namespace /ml
-ml_ns = "/ml"
-
-# ────────── 2. FastAPI как оболочка над ASGI ──────────
-app = FastAPI()
-app.mount("/", socketio.ASGIApp(sio, socketio_path="socket.io"))
-
-
-# ────────── 3. Обработчики событий ──────────
-@sio.event(namespace=ml_ns)
+@sio.event(namespace=ml_namespace)
 async def connect(sid, environ):
-    print(f"🔌  Клиент подключён: {sid}")
+    print(f"🔌 Клиент подключён: {sid}")
 
-
-@sio.event(namespace=ml_ns)
+@sio.event(namespace=ml_namespace)
 async def disconnect(sid):
-    print(f"❌  Клиент отключился: {sid}")
+    print(f"❌ Клиент отключился: {sid}")
 
-
-@sio.event(namespace=ml_ns)
-async def message(sid, data):
-    """
-    data — это словарь, который соответствует модели MessagePayload.
-    Socket.IO уже распарсил JSON ⇒ dict.
-    """
+@sio.event(namespace=ml_namespace)
+async def message(sid, data: dict):
     try:
+        # 🔎 Валидация структуры запроса
         payload = MessagePayload.model_validate(data)
+        user_command = payload.message.content
+        snippets = payload.selectedList
+
+        print(f"[📥] Команда: {user_command}")
+        print(f"[📄] Сниппеты: {snippets}")
+
+        # 🌀 Отправляем клиенту "loading"
+        await sio.emit("loading", namespace=ml_namespace, to=sid)
+
+        # 🚀 Запускаем главный пайплайн
+        run_main(user_command=user_command, snippets=snippets)
+
+        # 📤 Отправляем успешный ответ
+        reply = make_bot_reply("✅ Команда выполнена! Изменения внесены.")
+        await sio.emit("message", reply.model_dump(), namespace=ml_namespace, to=sid)
+
     except Exception as e:
-        print("⚠️  Неверный payload:", e)
-        return
+        print(f"❌ Ошибка при обработке: {e}")
+        reply = make_bot_reply(f"⚠️ Ошибка: {str(e)}")
+        await sio.emit("message", reply.model_dump(), namespace=ml_namespace, to=sid)
 
-    # 1. Сообщаем клиенту, что началась обработка
-    await sio.emit("loading", namespace=ml_ns, to=sid)
+# ────────── Запуск ──────────
 
-    # 2. Запускаем ваш парсер
-    reply_text = await run_parser(
-        payload.message.content,
-        payload.selectedList,
-    )
-
-    # 3. Отправляем готовый ответ
-    reply: Message = make_bot_reply(reply_text)
-    await sio.emit("message", reply.model_dump(), namespace=ml_ns, to=sid)
-
-
-# ────────── 4. Заглушка парсера ──────────
-async def run_parser(text: str, selected: list[str]) -> str:
-    """
-    Вставьте сюда свой код:
-    • вызов Python‑парсера;
-    • обращение к внешнему сервису;
-    • запуск LLM‑клиента.
-    """
-    # демо‑ответ
-    return f"Вы сказали: «{text}». Выбрано: {', '.join(selected)}"
-
-
-# ────────── 5. Точка входа (uvicorn) ──────────
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run(
-        "server:app",
-        host="0.0.0.0",
-        port=5500,
-        reload=True,  # удобно в разработке
-    )
+    uvicorn.run(app, host="0.0.0.0", port=5500)
