@@ -2,28 +2,12 @@
 Имеется HTML-блок, его родительское окружение, CSS и JS, а также индекс CSS-правил, из которого видно, в каких файлах и на каких строках находятся ключевые правила. Необходимо внести изменения в выбранный элемент согласно команде пользователя.
 
 ## Исходный HTML-блок (snippet)
-<button class="t-submit" data-buttonfieldset="button" data-field="buttontitle" style="
-                                  color: #000000;
-                                  background-color: #ffea00;
-                                  border-radius: 0px;
-                                  -moz-border-radius: 0px;
-                                  -webkit-border-radius: 0px;
-                                " type="submit">
-                                Получить прайс
-                              </button>
+<span>Рассчитать стоимость</span>
 
 ## Родительские контейнеры
-<div class="t-form__submit">
-<button class="t-submit" data-buttonfieldset="button" data-field="buttontitle" style="
-                                  color: #000000;
-                                  background-color: #ffea00;
-                                  border-radius: 0px;
-                                  -moz-border-radius: 0px;
-                                  -webkit-border-radius: 0px;
-                                " type="submit">
-                                Получить прайс
-                              </button>
-</div>
+<a class="t142A__btn t-btn t-btn_md js-click-stat" data-buttonfieldset="button2" data-tilda-event-name="/tilda/click/rec478794623/button2" href="#popup:embedcode" style="color: #000000; border: 3px solid #000000" target="">
+<span>Рассчитать стоимость</span>
+</a>
 
 ## Связанный CSS
 — (нет CSS)
@@ -32,7 +16,7 @@
 — (нет JS)
 
 ## Команда пользователя
-Сделай цвет кнопки ярко-зеленым
+Измени цвет текста на зеленый
 
 ## Инструкции
 На основе приведённых данных:

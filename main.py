@@ -23,17 +23,9 @@ def main():
     root_path = "templ"
 
     # 🔹 Исходный HTML-блок
-    snippet = """<button class="t-submit" data-buttonfieldset="button" data-field="buttontitle" style="
-                                  color: #000000;
-                                  background-color: #ffea00;
-                                  border-radius: 0px;
-                                  -moz-border-radius: 0px;
-                                  -webkit-border-radius: 0px;
-                                " type="submit">
-                                Получить прайс
-                              </button>""" 
+    snippet = """<span>Рассчитать стоимость</span>""" 
 
-    user_command = "Сделай цвет кнопки красным"
+    user_command = "Измени цвет текста на зеленый"
 
     # 🔹 Парсим структуру проекта
     proj = parse_project_simple(root_path)
@@ -67,19 +59,48 @@ def main():
         css_index_str=css_index_str
     )
     llm_answer = call_llm(prompt_text)
-    parsed = parse_llm_response(llm_answer)
+    print(f'Вот изначальные ответ ллм: {llm_answer}')
 
-    print("Ответ от LLM:")
-    print(parsed)
+    def recall_ansver(prompt) -> str:
+        rec_prompt = f'''
+                    Смотри ты сейчас получишь на вход ответ от моей ллм, которая генерит для меня новые блоки кода в виде
+                    html,css,js.
+
+                    Вот ответ от ллм:
+                    {llm_answer}
+                    
+                    Твоя задача пронализировать эти блоки кода и вывести только код под каждым разделом как тут:
+                    ### New HTML Block
+                    <p style="text-align: left; color: green">Фурнитура</p>
+
+                    ### Additional CSS
+                    .t-name_lg p {{
+                        color: green;
+                        }}
+
+                    ### Additional JS
+                    ""
+
+                    ### Explanation
+                    "Команда пользователя требует изменить цвет текста на зеленый. Поскольку исходный HTML-блок содержал инлайновый стиль, наиболее простым способом выполнить команду было изменить этот стиль напрямую, добавив `color: green`."
+                    '''
+        return call_llm(rec_prompt)
+    
+    print(f"Вот конечный ответ от ллм: {recall_ansver(llm_answer)}")
+
+    parsed = parse_llm_response(recall_ansver(llm_answer))
+
+    print(f"Вот спарсенный ответ: {parsed}")
+
+    print(f"Вот родительский элемент: {context_data["html_parents"]}")
 
     # 🔹 HTML: обновляем блок в файле
     apply_html_change("templ/index.html", context_data["found_element"], parsed["new_html"])
-    print("✅ Замена html прошла успешно!")
+
 
 
     # 🔹 CSS: обновляем <style> внутри HTML
     apply_css_change_to_html("templ/index.html", parsed["new_css"])
-    print("✅ Замена css прошла успешно!")
 
 
 if __name__ == "__main__":

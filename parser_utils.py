@@ -166,15 +166,18 @@ def fallback_decode_search(html_content: str, snippet: str):
     return None
 
 
-def collect_parents(elem) -> str:
+def collect_parents(elem, max_length=1500) -> str:
     """
-    Возвращает HTML ближайшего родительского контейнера для элемента.
-    Если родителя нет или он недопустим — возвращает пустую строку.
+    Возвращает HTML ближайшего родителя, если он не превышает max_length.
+    Иначе возвращает пустую строку.
     """
     parent = elem.parent
     if parent and parent.name not in ["html", "[document]", None]:
-        return parent.decode()
-    return ""
+        html = parent.decode()
+        if len(html) <= max_length:
+            return html
+    return elem
+
 
 
 import re
@@ -275,7 +278,7 @@ def analyze_dom_and_collect_context(index_html: str, all_css: str, all_js: str, 
             "found_in_file": index_html
         }
 
-    parents_html_str = collect_parents(found_elem)
+    parents_html_str = str(collect_parents(found_elem))
     related_css_str = collect_related_css(found_elem, "templ/index.html")
     related_js_str = collect_related_js(found_elem, all_js)
 

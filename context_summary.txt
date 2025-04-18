@@ -1,26 +1,10 @@
 === Найденный блок ===
-<button class="t-submit" data-buttonfieldset="button" data-field="buttontitle" style="
-                                  color: #000000;
-                                  background-color: #ffea00;
-                                  border-radius: 0px;
-                                  -moz-border-radius: 0px;
-                                  -webkit-border-radius: 0px;
-                                " type="submit">
-                                Получить прайс
-                              </button>
+<span>Рассчитать стоимость</span>
 
 === Родительская структура ===
-<div class="t-form__submit">
-<button class="t-submit" data-buttonfieldset="button" data-field="buttontitle" style="
-                                  color: #000000;
-                                  background-color: #ffea00;
-                                  border-radius: 0px;
-                                  -moz-border-radius: 0px;
-                                  -webkit-border-radius: 0px;
-                                " type="submit">
-                                Получить прайс
-                              </button>
-</div>
+<a class="t142A__btn t-btn t-btn_md js-click-stat" data-buttonfieldset="button2" data-tilda-event-name="/tilda/click/rec478794623/button2" href="#popup:embedcode" style="color: #000000; border: 3px solid #000000" target="">
+<span>Рассчитать стоимость</span>
+</a>
 
 === CSS (если найдено) ===
 —

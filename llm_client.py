@@ -8,6 +8,7 @@ def call_llm(prompt: str) -> str:
 
     response = client.chat.completions.create(
         model="meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
-        messages=[{"role": "user", "content": prompt}]
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=1024
     )
     return response.choices[0].message.content
