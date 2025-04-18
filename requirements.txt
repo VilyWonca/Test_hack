@@ -1,3 +1,5 @@
 together
 bs4
 dotenv
+fastapi
+socketio
