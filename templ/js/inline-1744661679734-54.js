@@ -1,1 +1,0 @@
-t_onReady(function() {t_onFuncLoad('t856_init',function() {t856_init('428624532');});});

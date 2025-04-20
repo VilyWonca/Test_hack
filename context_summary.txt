@@ -1,10 +1,8 @@
 === Найденный блок ===
-<span>Рассчитать стоимость</span>
+<p style="text-align: left;">Покрытие МДФ</p>
 
 === Родительская структура ===
-<a class="t142A__btn t-btn t-btn_md js-click-stat" data-buttonfieldset="button2" data-tilda-event-name="/tilda/click/rec478794623/button2" href="#popup:embedcode" style="color: #000000; border: 3px solid #000000" target="">
-<span>Рассчитать стоимость</span>
-</a>
+<div class="t-name t-name_lg" field="title5" style="padding-top:10px;padding-bottom:1px;"><p style="text-align: left;">Покрытие МДФ</p></div>
 
 === CSS (если найдено) ===
 —
@@ -13,4 +11,4 @@
 —
 
 === Найдено в файле ===
-templ/index.html
+D:\1 My Work\2 ML\Workes\client_hack\ai-generator-dizmaketov\extractor\output\do-doors.ru\index.html

@@ -1,48 +1,46 @@
 from bs4 import BeautifulSoup
 import re
 
-def apply_html_change(
-        html_path: str,
-        span_text: str,
-        new_html_block: str
-    ) -> bool:
-        """
-        В html_path находит первый <span>, чей .get_text(strip=True) == span_text,
-        берёт его родительский <a> и заменяет этот <a> на new_html_block.
-        Возвращает True, если замена выполнена, иначе False.
-        """
-        # ---------- читать файл ----------
-        with open(html_path, "r", encoding="utf-8") as f:
-            soup = BeautifulSoup(f, "html.parser")
+def apply_html_change(html_path: str, old_html_block: str, new_html_block: str) -> bool:
+    """
+    Ищет в HTML-файле фрагмент, совпадающий с old_html_block,
+    и заменяет его на new_html_block.
 
-        # ---------- разобрать новый фрагмент ----------
-        new_anchor = BeautifulSoup(new_html_block, "html.parser").find("a")
-        if new_anchor is None:
-            print("❌ new_html_block не содержит <a>…</a>")
-            return False
+    Args:
+        html_path (str): Путь к HTML-файлу
+        old_html_block (str): Старый HTML-фрагмент, который нужно заменить
+        new_html_block (str): Новый HTML-фрагмент, на который произвести замену
 
-        # ---------- найти нужный <span> и его <a> ----------
-        for span in soup.find_all("span"):
-            if span.get_text(strip=True) == span_text:
-                anchor = span.find_parent("a")
-                if anchor:
-                    print("🕵️ Найден старый <a>:\n", anchor, "\n")
+    Returns:
+        bool: True, если замена произошла, иначе False
+    """
 
-                    # клонируем новый фрагмент, чтобы не переиспользовать один и тот же объект
-                    replacement = BeautifulSoup(str(new_anchor), "html.parser").find("a")
+    # --- Шаг 1: Чтение исходного HTML ---
+    with open(html_path, "r", encoding="utf-8") as file:
+        soup = BeautifulSoup(file, "html.parser")
 
-                    # ---------- заменить ----------
-                    anchor.replace_with(replacement)
-                    print("🎉 Заменили на:\n", replacement, "\n")
+    # --- Шаг 2: Парсинг старого и нового фрагментов ---
+    old_fragment = BeautifulSoup(old_html_block, "html.parser").find()
+    new_fragment = BeautifulSoup(new_html_block, "html.parser").find()
 
-                    # ---------- сохранить ----------
-                    with open(html_path, "w", encoding="utf-8") as f:
-                        f.write(str(soup))
-                    print(f"✅ Заменили ссылку с текстом «{span_text}»")
-                    return True
-
-        print(f"❌ Не нашли <span> с текстом «{span_text}»")
+    if old_fragment is None or new_fragment is None:
+        print("❌ Один из блоков не содержит валидного HTML-элемента")
         return False
+
+    # --- Шаг 3: Поиск точного совпадения по структуре и содержимому ---
+    for tag in soup.find_all(old_fragment.name):
+        if str(tag).strip() == str(old_fragment).strip():
+            print(f"🕵️ Найден блок для замены:\n{tag}\n")
+
+            tag.replace_with(new_fragment)
+            with open(html_path, "w", encoding="utf-8") as file:
+                file.write(str(soup))
+
+            print("✅ Замена выполнена успешно.")
+            return True
+
+    print("❌ Совпадающий HTML-блок не найден.")
+    return False
 
 def apply_css_change_to_html(
     index_html_path: str,

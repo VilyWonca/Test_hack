@@ -4,51 +4,49 @@ import re
 from bs4 import BeautifulSoup
 from typing import Dict, List
 import sys
+from pathlib import Path
 
+def parse_project_simple(index_html_path: str) -> dict:
+    """
+    Принимает путь к index.html и извлекает пути к CSS и JS файлам.
 
-def parse_project_simple(root_path: str) -> dict:
+    Возвращает:
+    {
+        "index_html": полный путь,
+        "css_files": список css файлов (полные пути),
+        "js_files": список js файлов (полные пути)
+    }
     """
-    Предполагаем, что в корневой директории root_path лежат:
-      - index.html (главный HTML-файл)
-      - Поддиректории, например, css/ и js/ с файлами стилей и скриптами.
-    
-    Функция находит index.html и извлекает пути к CSS и JS файлам, указанным через теги:
-      - <link rel="stylesheet" href="...">
-      - <script src="...">
-    
-    Возвращает словарь следующего вида:
-        {
-          "index_html": "/полный/путь/index.html",
-          "css_files": ["/полный/путь/css/...", ...],
-          "js_files":  ["/полный/путь/js/...", ...]
-        }
-    """
-    index_html = os.path.join(root_path, "index.html")
+    index_html = Path(index_html_path)
+
+    if not index_html.exists():
+        raise FileNotFoundError(f"❌ Файл не найден: {index_html_path}")
+    if not index_html.name.endswith(".html"):
+        raise ValueError("❌ Указанный файл не является .html")
 
     css_files = []
     js_files = []
 
-    if os.path.exists(index_html):
-        with open(index_html, "r", encoding="utf-8") as f:
-            content = f.read()
-        soup = BeautifulSoup(content, "html.parser")
+    with open(index_html, "r", encoding="utf-8") as f:
+        content = f.read()
+    soup = BeautifulSoup(content, "html.parser")
 
-        # Ищем CSS файлы по тегу <link rel="stylesheet">
-        for link_tag in soup.find_all("link", rel="stylesheet"):
-            href = link_tag.get("href")
-            if href:
-                css_path = os.path.normpath(os.path.join(root_path, href))
-                css_files.append(css_path)
+    # Ищем <link rel="stylesheet" href=...>
+    for link_tag in soup.find_all("link", rel="stylesheet"):
+        href = link_tag.get("href")
+        if href:
+            css_path = (index_html.parent / href).resolve()
+            css_files.append(str(css_path))
 
-        # Ищем JS файлы по тегу <script src="...">
-        for script_tag in soup.find_all("script", src=True):
-            src = script_tag.get("src")
-            if src:
-                js_path = os.path.normpath(os.path.join(root_path, src))
-                js_files.append(js_path)
+    # Ищем <script src=...>
+    for script_tag in soup.find_all("script", src=True):
+        src = script_tag.get("src")
+        if src:
+            js_path = (index_html.parent / src).resolve()
+            js_files.append(str(js_path))
 
     return {
-        "index_html": index_html,
+        "index_html": str(index_html.resolve()),
         "css_files": css_files,
         "js_files": js_files
     }
@@ -242,15 +240,12 @@ def collect_related_js(elem, all_js: str) -> str:
 
 def analyze_dom_and_collect_context(index_html: str, all_css: str, all_js: str, selected_snippet: str) -> dict:
     """
-    Анализирует DOM в index_html, пытаясь найти выбранный элемент по snippet.
-    Если элемент найден, собирает:
-      - found_element: HTML выбранного элемента,
-      - html_parents: родительские контейнеры до max_levels,
-      - related_css: CSS, где упоминается id/класс элемента,
-      - related_js: JS, где упоминается id/класс элемента,
-      - found_in_file: имя файла index_html.
-    
-    Если элемент не найден – возвращает found_element как None.
+    Анализирует DOM из index.html, находит selected_snippet и возвращает:
+      - найденный HTML элемент,
+      - родительские контейнеры,
+      - CSS-правила, связанные с id/class,
+      - JS-фрагменты, связанные с id/class,
+      - путь к index.html (как маркер источника).
     """
     if not os.path.exists(index_html):
         return {
@@ -266,6 +261,7 @@ def analyze_dom_and_collect_context(index_html: str, all_css: str, all_js: str, 
     with open(index_html, "r", encoding="utf-8") as f:
         content = f.read()
 
+    # Поиск элемента
     found_elem = find_element_in_html(content, selected_snippet)
     if not found_elem:
         found_elem = fallback_decode_search(content, selected_snippet)
@@ -278,8 +274,9 @@ def analyze_dom_and_collect_context(index_html: str, all_css: str, all_js: str, 
             "found_in_file": index_html
         }
 
+    # Собираем окружение
     parents_html_str = str(collect_parents(found_elem))
-    related_css_str = collect_related_css(found_elem, "templ/index.html")
+    related_css_str = collect_related_css(found_elem, index_html)  # ✅ используем переданный index_html
     related_js_str = collect_related_js(found_elem, all_js)
 
     return {
@@ -289,3 +286,4 @@ def analyze_dom_and_collect_context(index_html: str, all_css: str, all_js: str, 
         "related_js": related_js_str,
         "found_in_file": index_html
     }
+

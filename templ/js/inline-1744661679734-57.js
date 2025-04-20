@@ -1,1 +1,0 @@
-t_onReady(function() {t_onFuncLoad('t850_init',function() {t850_init('560873817');});});

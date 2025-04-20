@@ -1,3 +1,4 @@
+from pathlib import Path
 from parser_utils import (
     parse_project_simple,
     load_all_css,
@@ -5,31 +6,33 @@ from parser_utils import (
     analyze_dom_and_collect_context
 )
 from indexer_utils import create_css_index, render_css_index_for_llm
-from context_builder import (
-    build_detailed_prompt,
-    save_full_context_to_file
-)
+from context_builder import build_detailed_prompt, save_full_context_to_file
 from pars_llm_ansver import parse_llm_response
 from llm_client import call_llm
 from replace_script import apply_html_change, apply_css_change_to_html
 
-
 def main(user_command: str, snippets: list[str]):
-    # 🔹 Собираем сниппет в одну строку
+    # 🔹 Собираем сниппеты в одну строку
     combined_snippet = "\n".join(snippets)
 
-    root_path = "templ"
+    # 🔹 Папка с выгрузкой сайта (где лежат все проекты с HTML)
+    root_path = "D:/1 My Work/2 ML/Workes/client_hack/ai-generator-dizmaketov/extractor/output/do-doors.ru/index.html"
 
-    # 🔹 Парсим структуру проекта
+    # 🔹 Ищем index.html и связанные файлы
     proj = parse_project_simple(root_path)
-    all_css = load_all_css("templ/css/")
-    all_js  = load_all_js(proj["js_files"])
+    index_html_path = proj["index_html"]
+    index_path = Path(index_html_path)
 
-    # 🔹 Собираем контекст по выбранному элементу
+    # 🔹 Загружаем CSS и JS
+    css_dir = index_path.parent / "css"
+    all_css = load_all_css(str(css_dir))
+    all_js = load_all_js(proj["js_files"])
+
+    # 🔹 Анализируем DOM и собираем контекст
     context_data = analyze_dom_and_collect_context(
-        index_html="templ/index.html",          
-        all_css=all_css,                     
-        all_js=all_js,                       
+        index_html=str(index_path),
+        all_css=all_css,
+        all_js=all_js,
         selected_snippet=combined_snippet
     )
     save_full_context_to_file(context_data, "context_summary.txt")
@@ -78,16 +81,18 @@ def main(user_command: str, snippets: list[str]):
         "Команда пользователя требует изменить цвет текста на зеленый. Поскольку исходный HTML-блок содержал инлайновый стиль, наиболее простым способом выполнить команду было изменить этот стиль напрямую, добавив `color: green`."
         '''
         return call_llm(rec_prompt)
-    
-    print(f"Вот конечный ответ от ллм: {recall_ansver(llm_answer)}")
 
-    parsed = parse_llm_response(recall_ansver(llm_answer))
+    final_answer = recall_ansver(llm_answer)
+    print(f"Вот конечный ответ от ллм: {final_answer}")
+
+    parsed = parse_llm_response(final_answer)
     print(f"Вот спарсенный ответ: {parsed}")
     print(f"Вот родительский элемент: {context_data['html_parents']}")
 
     # 🔹 HTML: обновляем блок в файле
-    apply_html_change("templ/index.html", context_data["found_element"], parsed["new_html"])
+    apply_html_change(root_path, context_data["found_element"], parsed["new_html"])
 
     # 🔹 CSS: обновляем <style> внутри HTML
-    apply_css_change_to_html("templ/index.html", parsed["new_css"])
+    apply_css_change_to_html(str(index_path.parent), parsed["new_css"])
 
+    return parsed["explanation"]

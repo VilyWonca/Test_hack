@@ -1,1 +1,0 @@
-t_onReady(function() {t_onFuncLoad('t908_init',function() {t908_init('480254850');});});

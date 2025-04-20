@@ -62,16 +62,18 @@ async def message(sid, data: dict):
         await sio.emit("loading", namespace=ml_namespace, to=sid)
 
         # 🚀 Запускаем главный пайплайн
-        run_main(user_command=user_command, snippets=snippets)
+        explanation = run_main(user_command=user_command, snippets=snippets)
 
         # 📤 Отправляем успешный ответ
-        reply = make_bot_reply("✅ Команда выполнена! Изменения внесены.")
-        await sio.emit("message", reply.model_dump(), namespace=ml_namespace, to=sid)
+        reply = make_bot_reply(explanation)
+        await sio.emit("message", explanation, namespace=ml_namespace, to=sid)
+
 
     except Exception as e:
         print(f"❌ Ошибка при обработке: {e}")
         reply = make_bot_reply(f"⚠️ Ошибка: {str(e)}")
-        await sio.emit("message", reply.model_dump(), namespace=ml_namespace, to=sid)
+        await sio.emit("message", explanation, namespace=ml_namespace, to=sid)
+
 
 # ────────── Запуск ──────────
 

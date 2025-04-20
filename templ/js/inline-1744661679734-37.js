@@ -1,1 +1,0 @@
-t_onReady(function() {setTimeout(function(){t_onFuncLoad('t_menusub_init',function() {t_menusub_init('771441545');});},500);});

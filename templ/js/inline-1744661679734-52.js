@@ -1,1 +1,0 @@
-t_onReady(function() {t_onFuncLoad('t_social_init',function() {t_social_init('478732002','t-review');});});
