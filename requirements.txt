@@ -1,0 +1,6 @@
+bs4
+dotenv
+fastapi
+python-socketio
+uvicorn
+openai

@@ -1,0 +1,14 @@
+=== Найденный блок ===
+<p style="text-align: left;">Фурнитура</p>
+
+=== Родительская структура ===
+<div class="t-name t-name_lg" field="title2" style="padding-top:10px;padding-bottom:1px;"><p style="text-align: left;">Фурнитура</p></div>
+
+=== CSS (если найдено) ===
+—
+
+=== JS (если найдено) ===
+—
+
+=== Найдено в файле ===
+C:\Work\MLWorks\Hack\ai-generator-dizmaketov\extractor\output\do-doors.ru\index.html
