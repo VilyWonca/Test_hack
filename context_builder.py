@@ -48,13 +48,6 @@ def build_detailed_prompt(
     sections.append("\n## Связанный JS")
     sections.append(related_js.strip() if related_js.strip() else "— (нет JS)")
 
-    # 6. CSS-Index (опционально)
-    if css_index_str.strip():
-        sections.append("\n## CSS-Index")
-        sections.append("Ниже приведён индекс CSS-правил с их идентификаторами, файлами, селекторами и приблизительными номерами строк. "
-                        "Если необходимо внести изменения в CSS, можно ссылаться на конкретное правило по его ID.")
-        sections.append(css_index_str.strip())
-
     # 7. Команда пользователя
     sections.append("\n## Команда пользователя")
     sections.append(user_command)
