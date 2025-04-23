@@ -54,7 +54,7 @@ def build_detailed_prompt(
     sections.append(user_command)
 
     # 8. Инструкции для LLM
-    sections.append("\n## Инструкции")
+    sections.append("\n## Инструкции:")
     sections.append(
         "На основе приведённых данных:\n"
         "1) Обнови/измени HTML-блок так, чтобы удовлетворить команду пользователя.\n"
