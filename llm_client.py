@@ -1,14 +1,23 @@
+from openai import OpenAI
 from dotenv import load_dotenv
-import together
+import os
 
-load_dotenv()  # Загружает .env
+load_dotenv()
 
 def call_llm(prompt: str) -> str:
-    client = together.Together()  # API-ключ подтянется автоматически из TOGETHER_API_KEY
-
-    response = client.chat.completions.create(
-        model="meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=1024
+    client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY"),
     )
-    return response.choices[0].message.content
+
+    completion = client.chat.completions.create(
+        model="meta-llama/llama-4-maverick:free",
+        messages=[
+            {
+            "role": "user",
+            "content": prompt
+            }
+        ]
+    )
+    return str(completion.choices[0].message.content)
+
