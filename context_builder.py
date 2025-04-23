@@ -41,7 +41,7 @@ def build_detailed_prompt(
     sections.append(parents.strip() if parents.strip() else "— (нет родительских контейнеров)")
 
     # 4. Связанный CSS
-    sections.append("\n## Связанный CSS")
+    sections.append("\n## Связанный CSS:")
     sections.append(related_css.strip() if related_css.strip() else "— (нет CSS)")
 
     # 5. Связанный JS
